@@ -2,10 +2,10 @@
 
 {% block container%}
 <center>
-    <h1>Fast Api Web na <u>Geek University</u></h1>
-    <span>Para mais cursos, visite nosso site clicando <a href="https://www.geekuniversity.com.br"
-            target="_blank">aqui</a></span>
-    <div>usuário: {{ usuario }}</div>
-    <p>Estamos na pagina Serviços</p>
+    <h1>Cadastro de Serviços</h1>
+    <form action="/servicos" , method="post" autocomplete="off">
+        <input type="text" name="servico" placeholder="Informe o serviço" required autofocus />
+        <button type="submit">Cadastrar</button>
+    </form>
 </center>
 {% endblock %}

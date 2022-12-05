@@ -21,6 +21,17 @@ async def servicos(request: Request):
     return templates.TemplateResponse("servicos.html", context=context)
 
 
+@app.post("/servicos")
+async def cad_servicos(request: Request):
+    form = await request.form()
+    servico: str = form.get("servico")  # type: ignore[assignment]
+
+    print(f"Serviçoss:{servico}")
+    context = {"request": request}
+
+    return templates.TemplateResponse("servicos.html", context=context)
+
+
 if __name__ == "__main__":
     import uvicorn
 
