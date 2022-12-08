@@ -2,10 +2,18 @@ from fastapi import FastAPI
 from fastapi.requests import Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from fastapi import UploadFile
+from pathlib import Path
+from aiofile import async_open
+from uuid import uuid4
 
 app = FastAPI()
+
 templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/media", StaticFiles(directory="media"), name="media")
+
+media = Path("media")
 
 
 @app.get("/")
@@ -26,8 +34,19 @@ async def cad_servicos(request: Request):
     form = await request.form()
     servico: str = form.get("servico")  # type: ignore[assignment]
 
-    print(f"Serviçoss:{servico}")
-    context = {"request": request}
+    print(f"Serviçoss: {servico}")
+    arquivo: UploadFile = form.get("arquivo")  # type: ignore[assignment]
+
+    print(f"Nome do arquivo: {arquivo.filename}")
+    print(f"Tipo do arquivo: {arquivo.content_type}")
+
+    arquivo_ext: str = arquivo.filename.split(".")[1]
+    novo_nome: str = f"{str(uuid4())}.{arquivo_ext}"
+
+    context = {"request": request, "imagem": novo_nome}
+
+    async with async_open(f"{media}/{novo_nome}", "wb") as afile:
+        await afile.write(arquivo.file.read())
 
     return templates.TemplateResponse("servicos.html", context=context)
 
